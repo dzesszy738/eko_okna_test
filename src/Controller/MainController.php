@@ -37,12 +37,12 @@ class MainController extends AbstractController {
         $form->handleRequest($request);
 
         if($form->isSubmitted()&& $form->isValid()){
-            #Pobranie danych z formularza ze strony
+            
             $adres = $form['Adres']->getData();
             $opis = $form['Opis']->getData();
             $pliki = $form['Pliki']->getData();
 
-            #Ustwienie wartości pól formularza
+            
             $formularz1->setUserID('1');
             $formularz1->setAdres($adres);
             $formularz1->setOpis($opis);
@@ -50,7 +50,7 @@ class MainController extends AbstractController {
             
             
             
-            #Sekcja dotycząca przesyłanych plików
+            
             if ($pliki) {
                 $originalFilename = pathinfo($pliki->getClientOriginalName(), PATHINFO_FILENAME);
                 
