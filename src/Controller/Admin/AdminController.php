@@ -17,6 +17,7 @@ class AdminController extends AbstractDashboardController
      */
     public function index(): Response
     {
+        
         return parent::index();
     }
 
@@ -24,14 +25,17 @@ class AdminController extends AbstractDashboardController
     {
         return Dashboard::new()
             ->setTitle('Eko Okna Test');
+            
     }
 
     public function configureMenuItems(): iterable
     {
-        yield MenuItem::linktoRoute('Back to the website', 'fas fa-home', 'main');
+        yield MenuItem::linktoRoute('Powrót do strony głównej', 'fas fa-home', 'main');
         yield MenuItem::linkToCrud('Formularz', 'fas fa-list', Formularz::class);
         
     }
+
+    
 
     
 }

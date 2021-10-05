@@ -39,9 +39,11 @@ class Formularz
     private $Flaga;
 
     /**
-     * @ORM\Column(type="string", nullable=true)
+     * @ORM\Column(type="string", length=255, nullable=true)
      */
     private $FilesId;
+
+ 
 
  
    
@@ -99,16 +101,16 @@ class Formularz
         return $this;
     }
 
-    public function getFilesId()
+    public function getFilesId(): ?string
     {
         return $this->FilesId;
     }
 
     
 
-    public function addFilesID($FilesID)
+    public function setFilesID(?string $FilesID):self
 {
-    $this->FilesID[] = $FilesID;
+    $this->FilesID = $FilesID;
 
     return $this;
 }

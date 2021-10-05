@@ -15,15 +15,20 @@ use Symfony\Component\Serializer\SerializerInterface;
 use App\Entity\Formularz;
 use App\Repository\UsersRepository;
 use App\Form\FormularzFormType;
- 
+use Symfony\Component\HttpFoundation\File\File;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
+use Symfony\Component\HttpFoundation\File\UploadedFile;
+use Symfony\Component\String\Slugger\SluggerInterface;
+
+
 
 class MainController extends AbstractController {
 	
-  
+    
     /**
      * @Route("/", name="main")
      */
-    public function index(Request $request): Response
+    public function index(Request $request,SluggerInterface $slugger): Response
     {
 
         $formularz1 = new Formularz();
@@ -32,15 +37,40 @@ class MainController extends AbstractController {
         $form->handleRequest($request);
 
         if($form->isSubmitted()&& $form->isValid()){
+            #Pobranie danych z formularza ze strony
             $adres = $form['Adres']->getData();
             $opis = $form['Opis']->getData();
             $pliki = $form['Pliki']->getData();
 
+            #Ustwienie wartości pól formularza
             $formularz1->setUserID('1');
             $formularz1->setAdres($adres);
             $formularz1->setOpis($opis);
             $formularz1->setFlaga('Nowe');
-            $formularz1->addFilesID($pliki);
+            
+            
+            
+            #Sekcja dotycząca przesyłanych plików
+            if ($pliki) {
+                $originalFilename = pathinfo($pliki->getClientOriginalName(), PATHINFO_FILENAME);
+                
+                $safeFilename = $slugger->slug($originalFilename);
+                $newFilename = $safeFilename.'-'.uniqid().'.'.$pliki->guessExtension();
+
+                
+                try {
+                    $pliki->move(
+                        $this->getParameter('files_directory'),
+                        $newFilename
+                    );
+                } catch (FileException $e) {
+                    
+                }
+
+                $formularz1->setFilesID($newFilename);        
+            }
+            
+                
 
             $em = $this->getDoctrine()->getManager();
             $em->persist($formularz1);
@@ -52,11 +82,10 @@ class MainController extends AbstractController {
         return $this->render('app/app.html.twig',[
             'our_form'=>$form->createView()
         ]);
-        //return $this->render('app/app.php', [
-        //   'controller_name' => 'MainController',
-        //]);
+        
         
     }
+    
 }
 
 ?>
