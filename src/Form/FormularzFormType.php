@@ -18,13 +18,16 @@ class FormularzFormType extends AbstractType
     {
         $builder
             
-            ->add('Adres', TextType::class)
+            ->add('Adres', TextType::class, [
+                'attr' => array('style' => 'max-width: 800px; width:80%; margin-left:50px;'),
+                'label' => 'Adres*'])
             ->add('Opis',TextareaType::class, array(
-                'attr' => array('style' => 'max-width: 800px; width:100%'),
+                'attr' => array('style' => 'max-width: 800px; width:80%; margin-left:50px;'),
                 'required' => false))
             ->add('Pliki', FileType::class, [
                     'label' => 'Pliki (dopuszczalne formaty to jpeg oraz png)',
-    
+                   
+                    'attr' => array('style' => 'max-width: 800px; width:80%; margin-left:50px;'),
                     // unmapped means that this field is not associated to any entity property
                     'mapped' => false,
     
