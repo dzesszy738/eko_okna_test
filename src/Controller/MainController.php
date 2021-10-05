@@ -1,0 +1,62 @@
+<?php
+
+
+
+namespace App\Controller;
+ 
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
+use Symfony\Component\Routing\Annotation\Route;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\JsonResponse;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\HttpKernel\Exception\AccessDeniedHttpException;
+use Symfony\Component\Serializer\SerializerInterface;
+use App\Entity\Formularz;
+use App\Repository\UsersRepository;
+use App\Form\FormularzFormType;
+ 
+
+class MainController extends AbstractController {
+	
+  
+    /**
+     * @Route("/", name="main")
+     */
+    public function index(Request $request): Response
+    {
+
+        $formularz1 = new Formularz();
+        $form = $this->createForm(FormularzFormType::class);
+
+        $form->handleRequest($request);
+
+        if($form->isSubmitted()&& $form->isValid()){
+            $adres = $form['Adres']->getData();
+            $opis = $form['Opis']->getData();
+            $pliki = $form['Pliki']->getData();
+
+            $formularz1->setUserID('1');
+            $formularz1->setAdres($adres);
+            $formularz1->setOpis($opis);
+            $formularz1->setFlaga('Nowe');
+            $formularz1->addFilesID($pliki);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($formularz1);
+            $em->flush();
+
+            
+        }
+
+        return $this->render('app/app.html.twig',[
+            'our_form'=>$form->createView()
+        ]);
+        //return $this->render('app/app.php', [
+        //   'controller_name' => 'MainController',
+        //]);
+        
+    }
+}
+
+?>
